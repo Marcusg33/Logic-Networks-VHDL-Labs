@@ -12,13 +12,13 @@ entity Gout_fsm is
     payment_request : out std_logic;
     payment_accepted : out std_logic;
     barrier     : out std_logic;
-    car_exited : out std_logic;
+    car_exited : out std_logic
     );
 end entity Gout_fsm;
 
 architecture behavioural of Gout_fsm is
 
-    type State is (IDLE,WAIT_PAYMENT,PAYMENT_OK,CAR_EXITING, CAR_EXITED);
+    type State is (IDLE,WAIT_PAYMENT,PAYMENT_OK,CAR_EXITING, CAR_EXITED_STATE);
     signal current_state : State; 
 
 begin
@@ -50,12 +50,12 @@ begin
                 
                 when CAR_EXITING =>
                     if sensor_A_Gout = '0' then
-                        current_state <= CAR_EXITED;
+                        current_state <= CAR_EXITED_STATE;
                     elsif sensor_B_Gout = '0' then
                         current_state <= PAYMENT_OK;
                     end if;
 
-                when CAR_EXITED =>
+                when CAR_EXITED_STATE =>
                     if sensor_A_Gout = '1' then
                         current_state <= CAR_EXITING;
                     end if ; 
@@ -84,7 +84,7 @@ begin
                 barrier <= '1';
             when CAR_EXITING =>
                 barrier <= '1';
-            when CAR_EXITED =>
+            when CAR_EXITED_STATE =>
                 barrier <= '1';
             when others =>
                 null; -- default IDLE state

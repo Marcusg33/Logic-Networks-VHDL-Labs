@@ -54,6 +54,20 @@ architecture Behavioral of Parking_Controller is
     end component Gin_fsm;
     -- Gout
 
+    component Gout_fsm is
+        port(
+            clk         : in  std_logic;
+            nrst         : in  std_logic;
+            sensor_A_Gout   : in std_logic;
+            sensor_B_Gout   : in std_logic;
+            payment_done : in std_logic;
+            payment_request : out std_logic;
+            payment_accepted : out std_logic;
+            barrier     : out std_logic;
+            car_exited : out std_logic
+        );
+    end component Gout_fsm;
+
     signal car_count : integer range 0 to PARKING_CAPACITY := 0; -- Car counter
     signal car_detected_Gin1, car_detected_Gin2 : std_logic; -- Car detection flags for entry gates
     signal car_entered_Gin1, car_entered_Gin2 : std_logic; -- Car entered flags for entry gates
@@ -109,10 +123,31 @@ begin
             barrier => barrier_Gin2
         );
         
-    -- Gout1:   clk, nrst, sensor_A_Gout1, sensor_B_Gout1, payment_done,
-    --          payment_requested_Gin1, payment_accepted_Gout1, barrier_Gout, car_exited_Gout1
-    -- Gout2:   clk, nrst, sensor_A_Gout2, sensor_B_Gout2, payment_done,
-    --          payment_requested_Gin2, payment_accepted_Gout2, barrier_Gout2, car_exited_Gout2
+    Gout1 : Gout_fsm
+        port map (
+            clk => clk,
+            nrst => nrst,
+            sensor_A_Gout => sensor_A_Gout1,
+            sensor_B_Gout => sensor_B_Gout1,
+            payment_done => payment_done,
+            payment_request => payment_requested_Gin1,
+            payment_accepted => payment_accepted_Gout1,
+            barrier => barrier_Gout1,
+            car_exited => car_exited_Gout1
+        );
+
+    Gout2 : Gout_fsm
+        port map (
+            clk => clk,
+            nrst => nrst,
+            sensor_A_Gout => sensor_A_Gout2,
+            sensor_B_Gout => sensor_B_Gout2,
+            payment_done => payment_done,
+            payment_request => payment_requested_Gin2,
+            payment_accepted => payment_accepted_Gout2,
+            barrier => barrier_Gout2,
+            car_exited => car_exited_Gout2
+        );
 
 
     -- Car Detection Logic for Entry Gates
