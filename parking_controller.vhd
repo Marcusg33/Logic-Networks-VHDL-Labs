@@ -170,9 +170,9 @@ begin
                         end if;
                     
                     -- Single gate car detection
-                    elsif car_detected_Gin1 = '1' then
+                    elsif car_detected_Gin1 = '1' and car_count < PARKING_CAPACITY then
                         current_state <= EN_GIN1;
-                    elsif car_detected_Gin2 = '1' then
+                    elsif car_detected_Gin2 = '1' and car_count < PARKING_CAPACITY then
                         current_state <= EN_GIN2;
                     end if;
 
