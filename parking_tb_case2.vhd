@@ -85,30 +85,30 @@ begin
     --------------------------------------------------------------------------------
     --! Instantiate the DUT
     --------------------------------------------------------------------------------
-    dut : entity work.MODULE_NAME(architecture_name) --! Replace with actual module and architecture names
+    dut : entity work.Parking_Controller(Behavioral) --! Replace with actual module and architecture names
         port map (
-            -- Inputs  
-            YOUR_MODULE_clk               => Clk,
-            YOUR_MODULE_nrst              => nRst,
-            YOUR_MODULE_payment_request   => payment_request,
-            YOUR_MODULE_payment_done      => payment_done,
-            YOUR_MODULE_sensor_A_Gin1     => sensor_front_Gin1,
-            YOUR_MODULE_sensor_B_Gin1     => sensor_back_Gin1,
-            YOUR_MODULE_sensor_A_Gin2     => sensor_front_Gin2,
-            YOUR_MODULE_sensor_B_Gin2     => sensor_back_Gin2,
-            YOUR_MODULE_sensor_A_Gout1    => sensor_front_Gout1,
-            YOUR_MODULE_sensor_B_Gout1    => sensor_back_Gout1,
-            YOUR_MODULE_sensor_A_Gout2    => sensor_front_Gout2,
-            YOUR_MODULE_sensor_B_Gout2    => sensor_back_Gout2,
-            -- Outputs
-            YOUR_MODULE_payment_accepted   => payment_accepted,
-            YOUR_MODULE_barrier_Gin1       => barrier_Gin1,
-            YOUR_MODULE_barrier_Gin2       => barrier_Gin2,
-            YOUR_MODULE_barrier_Gout1      => barrier_Gout1,
-            YOUR_MODULE_barrier_Gout2      => barrier_Gout2,
-            YOUR_MODULE_Green_Light        => Green_Light,
-            YOUR_MODULE_Red_Light          => Red_Light,
-            YOUR_MODULE_display            => display  -- optional output
+            --! Inputs  
+            clk               => Clk,
+            nrst              => nRst,
+            payment_done      => payment_done,
+            sensor_A_Gin1     => sensor_front_Gin1,
+            sensor_B_Gin1     => sensor_back_Gin1,
+            sensor_A_Gin2     => sensor_front_Gin2,
+            sensor_B_Gin2     => sensor_back_Gin2,
+            sensor_A_Gout1    => sensor_front_Gout1,
+            sensor_B_Gout1    => sensor_back_Gout1,
+            sensor_A_Gout2    => sensor_front_Gout2,
+            sensor_B_Gout2    => sensor_back_Gout2,
+            --! Outputs
+            payment_request   => payment_request,
+            payment_accepted   => payment_accepted,
+            barrier_Gin1       => barrier_Gin1,
+            barrier_Gin2       => barrier_Gin2,
+            barrier_Gout1      => barrier_Gout1,
+            barrier_Gout2      => barrier_Gout2,
+            Green_Light        => Green_Light,
+            Red_Light          => Red_Light,
+            display            => display  -- optional output
   );
 
     --------------------------------------------------------------------------------
