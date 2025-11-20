@@ -292,6 +292,7 @@ begin
         assert barrier_Gout1 = '0' report "Barrier Gout1 should be closed" severity warning;
         assert barrier_Gout2 = '0' report "Barrier Gout2 should be closed" severity warning;
     
+        std.env.stop(0);
         wait;
     end process;
 
