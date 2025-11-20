@@ -1,3 +1,6 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
 entity Parking_Controller is
     generic (
         PARKING_CAPACITY : integer := 7
@@ -37,7 +40,18 @@ end entity;
 architecture Behavioral of Parking_Controller is
 
     -- Components Declaration
-    -- Gin
+    component Gin_fsm is
+        port(
+            clk         : in  std_logic;
+            nrst         : in  std_logic;
+            sensor_A_Gin   : in std_logic;
+            sensor_B_Gin   : in std_logic;
+            enable      : in std_logic;
+            car_detected: out std_logic;
+            car_entered : out std_logic;
+            barrier     : out std_logic
+        );
+    end component Gin_fsm;
     -- Gout
 
     signal car_count : integer range 0 to PARKING_CAPACITY := 0; -- Car counter
@@ -48,18 +62,8 @@ architecture Behavioral of Parking_Controller is
     signal payment_requested_Gin1, payment_requested_Gin2 : std_logic; -- Payment request flags for exit gates
     signal payment_accepted_Gout1, payment_accepted_Gout2 : std_logic; -- Payment accepted flags for exit gates
 
-    type state_type is (IDLE, ENABLE_BOTH, ENABLE_GIN1, ENABLE_GIN2, ERROR_STATE); -- States for parking controller
-    type current_state is state_type := IDLE; -- Current state signal
-
-    -- Components port mapping
-    -- Gin1:    clk, nrst, sensor_A_Gin1, sensor_B_Gin1, enable,
-    --          car_detected_Gin1, car_entered_Gin1, barrier_Gin1
-    -- Gin2:    clk, nrst, sensor_A_Gin2, sensor_B_Gin2, enable,
-    --          car_detected_Gin2, car_entered_Gin2, barrier_Gin2
-    -- Gout1:   clk, nrst, sensor_A_Gout1, sensor_B_Gout1, payment_done,
-    --          payment_requested_Gin1, payment_accepted_Gout1, barrier_Gout, car_exited_Gout1
-    -- Gout2:   clk, nrst, sensor_A_Gout2, sensor_B_Gout2, payment_done,
-    --          payment_requested_Gin2, payment_accepted_Gout2, barrier_Gout2, car_exited_Gout2
+    type state_type is (IDLE, ENABLE_BOTH, EN_GIN1, EN_GIN2, ERROR_STATE); -- States for parking controller
+    signal current_state : state_type := IDLE; -- Current state signal
 
     function int_to_7seg(value : integer) return std_logic_vector is
         variable result : std_logic_vector(6 downto 0);
@@ -80,6 +84,37 @@ architecture Behavioral of Parking_Controller is
 
 begin
 
+    -- Components port mapping
+    Gin1 : Gin_fsm
+        port map (
+            clk => clk,
+            nrst => nrst,
+            sensor_A_Gin => sensor_A_Gin1,
+            sensor_B_Gin => sensor_B_Gin1,
+            enable => enable_Gin1,
+            car_detected => car_detected_Gin1,
+            car_entered => car_entered_Gin1,
+            barrier => barrier_Gin1
+        );
+    
+    Gin2 : Gin_fsm
+        port map (
+            clk => clk,
+            nrst => nrst,
+            sensor_A_Gin => sensor_A_Gin2,
+            sensor_B_Gin => sensor_B_Gin2,
+            enable => enable_Gin2,
+            car_detected => car_detected_Gin2,
+            car_entered => car_entered_Gin2,
+            barrier => barrier_Gin2
+        );
+        
+    -- Gout1:   clk, nrst, sensor_A_Gout1, sensor_B_Gout1, payment_done,
+    --          payment_requested_Gin1, payment_accepted_Gout1, barrier_Gout, car_exited_Gout1
+    -- Gout2:   clk, nrst, sensor_A_Gout2, sensor_B_Gout2, payment_done,
+    --          payment_requested_Gin2, payment_accepted_Gout2, barrier_Gout2, car_exited_Gout2
+
+
     -- Car Detection Logic for Entry Gates
     in_gate_controller : process(clk, nrst) 
     begin
@@ -96,14 +131,14 @@ begin
                         if car_count < PARKING_CAPACITY - 1 then
                             current_state <= ENABLE_BOTH;
                         else 
-                            current_state <= ENABLE_GIN1; -- Prioritizes one gate if nearly full
+                            current_state <= EN_GIN1; -- Prioritizes one gate if nearly full
                         end if;
                     
                     -- Single gate car detection
                     elsif car_detected_Gin1 = '1' then
-                        current_state <= ENABLE_GIN1;
+                        current_state <= EN_GIN1;
                     elsif car_detected_Gin2 = '1' then
-                        current_state <= ENABLE_GIN2;
+                        current_state <= EN_GIN2;
                     end if;
 
                 when ERROR_STATE =>
@@ -136,15 +171,14 @@ begin
                     enable_Gin1 <= '1';
                     enable_Gin2 <= '1';
 
-                when ENABLE_GIN1 =>
+                when EN_GIN1 =>
                     enable_Gin1 <= '1';
 
-                when ENABLE_GIN2 =>
+                when EN_GIN2 =>
                     enable_Gin2 <= '1';
 
                 when others =>
-                    enable_Gin1 <= '0';
-                    enable_Gin2 <= '0';
+                    null;
             end case;
         end if;
     end process output_control;
