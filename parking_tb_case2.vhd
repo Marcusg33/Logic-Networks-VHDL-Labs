@@ -188,7 +188,7 @@ begin
         sensor_front_Gout2 <= '1';
         wait for 2 us;
         -- Payment system simulation
-        assert payment_request = '0' report "Part 3: Payment request not activated for car exiting from Gout2" severity error;
+        assert payment_request = '1' report "Part 3: Payment request not activated for car exiting from Gout2" severity error;
         payment_done <= '1';
         wait for 0.1 us;
         payment_done <= '0';

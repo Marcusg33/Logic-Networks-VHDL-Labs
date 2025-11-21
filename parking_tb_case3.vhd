@@ -180,7 +180,7 @@ begin
         sensor_front_Gout1 <= '1';
         wait for 5 us;
         -- Payment system simulation (driver pays at output)
-        assert payment_request = '0' report "Part 3: Payment request should be high before payment" severity warning;
+        assert payment_request = '1' report "Part 3: Payment request should be high before payment" severity warning;
         payment_done <= '1';
         wait for 0.1 us;
         payment_done <= '0';

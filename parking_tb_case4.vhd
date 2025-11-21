@@ -246,7 +246,7 @@ begin
         sensor_front_Gout1 <= '1';
         wait for 5 us;
         -- Payment system simulation
-        assert payment_request = '0' report "Part 4: Payment request not signaled for car exiting Gate 1" severity warning;
+        assert payment_request = '1' report "Part 4: Payment request not signaled for car exiting Gate 1" severity warning;
         payment_done <= '1';
         wait for 0.1 us;
         payment_done <= '0';
@@ -266,7 +266,7 @@ begin
         sensor_front_Gout2 <= '1';
         wait for 5 us;
         -- Payment system simulation
-        assert payment_request = '0' report "Part 4: Payment request not signaled for car exiting Gate 2" severity warning;
+        assert payment_request = '1' report "Part 4: Payment request not signaled for car exiting Gate 2" severity warning;
         payment_done <= '1';
         wait for 0.1 us;
         payment_done <= '0';
