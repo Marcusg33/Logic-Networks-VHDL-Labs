@@ -76,7 +76,7 @@ architecture Behavioral of Parking_Controller is
     signal payment_requested_Gin1, payment_requested_Gin2 : std_logic; -- Payment request flags for exit gates
     signal payment_accepted_Gout1, payment_accepted_Gout2 : std_logic; -- Payment accepted flags for exit gates
 
-    type state_type is (IDLE, ENABLE_BOTH, EN_GIN1, EN_GIN2, ERROR_STATE); -- States for parking controller
+    type state_type is (IDLE, ENABLE_BOTH, EN_GIN1, EN_GIN2); -- States for parking controller
     signal current_state : state_type := IDLE; -- Current state signal
 
     function int_to_7seg(value : integer) return std_logic_vector is
@@ -175,10 +175,6 @@ begin
                     elsif car_detected_Gin2 = '1' and car_count < PARKING_CAPACITY then
                         current_state <= EN_GIN2;
                     end if;
-
-                when ERROR_STATE =>
-                    -- Block all system until reset
-                    current_state <= ERROR_STATE;
 
                 when others =>
                     -- Other states return to IDLE after 1 cycle
