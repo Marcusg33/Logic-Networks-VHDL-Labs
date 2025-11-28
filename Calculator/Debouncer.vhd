@@ -17,7 +17,7 @@ end entity Debouncer;
 architecture Behavioral of Debouncer is
     signal counter      : std_logic_vector(counter_size-1 downto 0) := (others => '1');
     signal prev_state   : std_logic := '0';
-    
+    signal outputting   : std_logic := '0';
 begin
     process(clk, rst)
     begin
@@ -25,8 +25,14 @@ begin
             counter    <= (others => '1');
             prev_state <= '0';
             pulse  <= '0';
+            outputting <= '0';
         elsif rising_edge(clk) then
-            if bouncy /= prev_state then
+            if outputting = '1' then
+                -- Output has been updated, wait for next change
+                outputting <= '0';
+                counter <= (others => '1');
+                pulse <= '0';
+            else if bouncy /= prev_state then
                 -- Button state changed, reset counter
                 counter <= (others => '1');
                 prev_state <= bouncy;
@@ -36,6 +42,7 @@ begin
                 else
                     -- Counter has expired, update clean output
                     pulse <= prev_state;
+                    outputting <= '1';
                 end if;
             end if;
         end if;
