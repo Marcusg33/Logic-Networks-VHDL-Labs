@@ -21,7 +21,7 @@ architecture Behavioral of Debouncer is
 begin
     process(clk, rst)
     begin
-        if rst = '1' then
+        if rst = '0' then
             counter    <= (others => '1');
             prev_state <= '0';
             pulse  <= '0';
