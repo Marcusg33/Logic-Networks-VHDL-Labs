@@ -7,40 +7,41 @@ end debouncer_testbench;
 
 architecture Behavioral of debouncer_testbench is
 
-component debouncer
+component Debouncer
   generic (
     counter_size : integer := 12
   );
   port (
-    clock, reset : in std_logic;
+    clk : in std_logic;
+    rst : in std_logic;
     bouncy : in std_logic;
     pulse : out std_logic
   );
 end component;
 
-signal clock : std_logic := '0';
-signal reset : std_logic := '0';
+signal clk : std_logic := '0';
+signal rst : std_logic := '0';
 signal bouncy : std_logic := '0';
 signal pulse : std_logic := '0';
 
 begin
 
-   dut : debouncer
+   dut : Debouncer
    port map(
-      clock  => clock,
-      reset  => reset,
+      clk  => clk,
+      rst  => rst,
       bouncy => bouncy,
       pulse   => pulse
    );
 
-   clock <= not(clock) after 5 ns;
+   clk <= not(clk) after 5 ns;
 
    dut_test_proc : process
    begin
 
-      reset <= '0';
+      rst <= '0';
       wait for 10 ns;
-      reset <= '1';
+      rst <= '1';
       wait for 10 ns;
 
       bouncy <= '0';
