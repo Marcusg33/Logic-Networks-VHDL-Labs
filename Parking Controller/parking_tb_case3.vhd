@@ -200,7 +200,7 @@ begin
         sensor_front_Gout2 <= '1';
         wait for 2 us;
         -- Payment system simulation
-        assert payment_request = '0' report "Part 3: Payment request should be high before payment" severity warning;
+        assert payment_request = '1' report "Part 3: Payment request should be high before payment" severity warning;
         payment_done <= '1';
         wait for 0.1 us;
         payment_done <= '0';
