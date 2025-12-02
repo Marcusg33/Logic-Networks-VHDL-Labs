@@ -32,7 +32,7 @@ begin
                 outputting <= '0';
                 counter <= (others => '1');
                 pulse <= '0';
-            else if bouncy /= prev_state then
+            elsif bouncy /= prev_state then
                 -- Button state changed, reset counter
                 counter <= (others => '1');
                 prev_state <= bouncy;
