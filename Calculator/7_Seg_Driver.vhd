@@ -10,24 +10,24 @@ use IEEE.NUMERIC_STD.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity seven_segment_driver is
+entity Seven_segment_driver is
   generic (
     size : integer := 20
   );
   Port (
-    clock : in std_logic;
-    reset : in std_logic;
+    clk : in std_logic;
+    rst : in std_logic;
     binary_input : in std_logic_vector( 15 downto 0 );
     CA, CB, CC, CD, CE, CF, CG, DP : out std_logic;
     AN : out std_logic_vector( 3 downto 0 )
   );
 
-end seven_segment_driver;
+end Seven_segment_driver;
 
-architecture Behavioral of seven_segment_driver is
+architecture Behavioral of Seven_segment_driver is
 
   -- We will use a counter to derive the frequency for the displays
-  -- Clock is 100 MHz, we use 3 bits to address the display, so we count every
+  -- clk is 100 MHz, we use 3 bits to address the display, so we count every
   -- size - 3 bits. To get ~100 Hz per digit, we need 20 bits, so that we divide
   -- by 2^20.
   signal flick_counter : unsigned( size - 1 downto 0 );
@@ -42,6 +42,9 @@ architecture Behavioral of seven_segment_driver is
   signal digit2 : std_logic_vector( 3 downto 0 );
   signal digit3 : std_logic_vector( 3 downto 0 );
 
+  -- Select which digit to display
+  signal selector : std_logic_vector( 1 downto 0 );
+
 begin
 
   -- Update the digits
@@ -50,17 +53,19 @@ begin
   digit2 <= binary_input( 11 downto 8 );
   digit3 <= binary_input( 15 downto 12 );
 
-  -- Divide the clock
-  process ( clock, reset ) begin
-    if reset = '0' then
+  -- Divide the clk
+  process ( clk, rst ) begin
+    if rst = '0' then
       flick_counter <= ( others => '0' );
-    elsif rising_edge( clock ) then
+    elsif rising_edge( clk ) then
       flick_counter <= flick_counter + 1;
     end if;
   end process;
 
+  -- Update the selector
+    selector <= std_logic_vector( flick_counter( size - 1 downto size - 2 ) );
   -- Select the anode
-  with flick_counter( size - 1 downto size - 3 ) select
+  with selector select
     AN <=
       "1110" when "00",
       "1101" when "01",
@@ -68,11 +73,11 @@ begin
       "0111" when others;
 
   -- Select the digit
-  with flick_counter( size - 1 downto size - 3 ) select
+  with selector select
     digit <=
-      digit0 when "000",
-      digit1 when "001",
-      digit2 when "010",
+      digit0 when "00",
+      digit1 when "01",
+      digit2 when "10",
       digit3 when others;
 
   -- Decode the digit
