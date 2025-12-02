@@ -37,12 +37,14 @@ end accumulator_testbench;
 
 architecture Behavioral of accumulator_testbench is
 
-component accumulator
+component Accumulator
   Port (
-    clock, reset : in std_logic;
-    acc_init, acc_enable : in std_logic;
-    acc_in : in signed( 15 downto 0 );
-    acc_out : out signed( 15 downto 0 )
+    clk         : in  std_logic;
+    rst         : in  std_logic;
+    ac_init        : in  std_logic;
+    ac_enable      : in  std_logic;
+    data_in     : in  signed(15 downto 0);
+    result_out  : out signed(15 downto 0)
   );
 end component;
 
@@ -55,14 +57,14 @@ signal acc_out : signed(15 downto 0) := (others => '0');
 
 begin
 
- uut : accumulator
+ uut : Accumulator
  port map(
-    clock      => clock,
-    reset      => reset,
-    acc_init   => acc_init,
-    acc_enable => acc_enable,
-    acc_in     => acc_in,
-    acc_out    => acc_out
+    clk      => clock,
+    rst      => reset,
+    ac_init   => acc_init,
+    ac_enable => acc_enable,
+    data_in    => acc_in,
+    result_out    => acc_out
  );
 
  clock <= not(clock) after 5 ns;
@@ -70,9 +72,9 @@ begin
  uut_test_proc : process
  begin
 
-    reset <= '1';
-    wait for 20 ns;
     reset <= '0';
+    wait for 20 ns;
+    reset <= '1';
 
     wait for 10 ns;
 
