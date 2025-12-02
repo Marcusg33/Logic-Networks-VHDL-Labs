@@ -37,33 +37,33 @@ architecture Behavioral of Calculator is
             counter_size : integer := 12
         );
         port (
-            clk         : in  std_logic;
-            rst         : in  std_logic;
-            bouncy    : in  std_logic;
-            pulse   : out std_logic
+            clk : in std_logic;
+            rst : in std_logic;
+            bouncy : in std_logic;
+            pulse : out std_logic
         );
     end component Debouncer;
 
     component Accumulator is
         port (
-            clk         : in  std_logic;
-            rst         : in  std_logic;
-            ac_init        : in  std_logic;
-            ac_enable      : in  std_logic;
-            data_in     : in  signed(15 downto 0);
-            result_out  : out signed(15 downto 0)
+            clk : in std_logic;
+            rst : in std_logic;
+            ac_init : in std_logic;
+            ac_enable : in std_logic;
+            data_in : in signed(15 downto 0);
+            result_out : out signed(15 downto 0)
         );
     end component Accumulator;
 
     component ALU is
         Port (
-            a        : in  signed( 15 downto 0 );
-            b        : in  signed( 15 downto 0 );  
-            add      : in  std_logic;
-            subtract : in  std_logic;
-            multiply : in  std_logic;
-            divide   : in  std_logic;
-            r        : out signed( 15 downto 0 )
+            a : in signed( 15 downto 0 );
+            b : in signed( 15 downto 0 );  
+            add : in std_logic;
+            subtract : in std_logic;
+            multiply : in std_logic;
+            divide : in std_logic;
+            r : out signed( 15 downto 0 )
         );
     end component ALU;
 
@@ -83,87 +83,87 @@ architecture Behavioral of Calculator is
  
 begin
 
-  -- Buttons Declaration:
-  center_detect : Debouncer
-  port map (
-    clk   => clock,
-    rst   => reset,
-    bouncy  => BTNC,
-    pulse   => center_edge
-  );
+    -- Buttons Declaration:
+    center_detect : Debouncer
+    port map (
+        clk => clock,
+        rst => reset,
+        bouncy => BTNC,
+        pulse => center_edge
+    );
   
-  up_detect : Debouncer
-  port map (
-    clk   => clock,
-    rst   => reset,
-    bouncy  => BTNU,
-    pulse   => up_edge
-  );
-  
-  down_detect : Debouncer
-  port map (
-    clk   => clock,
-    rst   => reset,
-    bouncy  => BTND,
-    pulse   => down_edge
-  );
-  
-  left_detect : Debouncer
-  port map (
-    clk   => clock,
-    rst   => reset,
-    bouncy  => BTNL,
-    pulse   => left_edge
-  );
+    up_detect : Debouncer
+    port map (
+        clk => clock,
+        rst => reset,
+        bouncy => BTNU,
+        pulse => up_edge
+    );
+    
+    down_detect : Debouncer
+    port map (
+        clk => clock,
+        rst => reset,
+        bouncy => BTND,
+        pulse => down_edge
+    );
+    
+    left_detect : Debouncer
+    port map (
+        clk => clock,
+        rst => reset,
+        bouncy => BTNL,
+        pulse => left_edge
+    );
 
-  right_detect : Debouncer
-  port map (
-    clk   => clock,
-    rst   => reset,
-    bouncy  => BTNR,
-    pulse   => right_edge
-  );
+    right_detect : Debouncer
+    port map (
+        clk => clock,
+        rst => reset,
+        bouncy => BTNR,
+        pulse => right_edge
+    );
   
-  -- Instantiate the seven segment display driver
-  the_driver : Seven_segment_driver
-  generic map ( 
-     size => 21
-  ) port map (
-    clk => clock,
-    rst => reset,
-    binary_input => display_value,
-    CA     => CA,
-    CB     => CB,
-    CC     => CC,
-    CD     => CD,
-    CE     => CE,
-    CF     => CF,
-    CG     => CG,
-    DP     => DP,
-    AN     => AN
-  );
+    -- Instantiate the seven segment display driver
+    the_driver : Seven_segment_driver
+    generic map ( 
+        size => 21
+    ) port map (
+        clk => clock,
+        rst => reset,
+        binary_input => display_value,
+        CA => CA,
+        CB => CB,
+        CC => CC,
+        CD => CD,
+        CE => CE,
+        CF => CF,
+        CG => CG,
+        DP => DP,
+        AN => AN
+    );
 
     -- Instantiate the accumulator
     the_accumulator : Accumulator
     port map (
-        clk         => clock,
-        rst         => reset,
-        ac_init     => acc_init,
-        ac_enable   => acc_enable,
-        data_in     => acc_in,
-        result_out  => acc_out
+        clk => clock,
+        rst => reset,
+        ac_init => acc_init,
+        ac_enable => acc_enable,
+        data_in => acc_in,
+        result_out => acc_out
     );
 
     -- Instantiate the ALU
     the_alu : ALU
     port map (
-        a        => acc_out,
-        b        => signed( sw_input ),
-        add      => do_add,
+        a => acc_out,
+        b => signed( sw_input ),
+        add => do_add,
         subtract => do_sub,
         multiply => do_mult,
-        divide   => do_div,
-        r        => acc_in
+        divide => do_div,
+        r => acc_in
     );
 
     -- Control logic
