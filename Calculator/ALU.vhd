@@ -3,7 +3,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
 -- ALU entity definition: inputs must take the sign into account!
-entity alu is
+entity ALU is
   Port (
 -- Enter port declarations here:
     -- * A 16 bit input signed "a"
@@ -18,10 +18,10 @@ entity alu is
     divide   : in  std_logic;
     r        : out signed( 15 downto 0 )
   );
-end alu;
+end ALU;
 
 -- Definizione architettura ALU
-architecture Behavioral of alu is
+architecture Behavioral of ALU is
   signal moltiplica : signed(31 downto 0);
 begin
 
