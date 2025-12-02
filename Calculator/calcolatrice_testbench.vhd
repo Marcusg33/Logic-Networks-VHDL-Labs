@@ -17,10 +17,24 @@ architecture Behavioral of calcolatrice_testbench is
   signal CA, CB, CC, CD, CE, CF, CG, DP : std_logic;
   signal AN : std_logic_vector( 3 downto 0 );
   signal BTNC, BTNU, BTNL, BTNR, BTND : std_logic;
+
+  
+  component Calculator is
+      Port (
+          clock : in std_logic;
+          reset : in std_logic;
+          SW : in std_logic_vector( 15 downto 0 );
+          BTNC, BTNU, BTNL, BTNR, BTND : in std_logic;
+          LED : out std_logic_vector( 15 downto 0 );
+          CA, CB, CC, CD, CE, CF, CG, DP : out std_logic; --! modify the constraint file accordingly
+          AN : out std_logic_vector( 3 downto 0 )
+      );
+  end component Calculator;
+
 begin
 
   -- Instantiate the dut
-  dut : entity work.calcolatrice( Behavioral ) port map (
+  dut : Calculator port map (
     clock => clock,
     reset => reset,
     SW => SW,
