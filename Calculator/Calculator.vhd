@@ -34,7 +34,7 @@ architecture Behavioral of Calculator is
     -- Components declaration:
     component Debouncer is
         generic(
-            counter_size : integer := 20
+            counter_size : integer := 24
         );
         port (
             clk : in std_logic;
