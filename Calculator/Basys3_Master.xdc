@@ -39,8 +39,8 @@ set_property PACKAGE_PIN U1 [get_ports {SW[13]}]
 	set_property IOSTANDARD LVCMOS33 [get_ports {SW[13]}]
 set_property PACKAGE_PIN T1 [get_ports {SW[14]}]					
 	set_property IOSTANDARD LVCMOS33 [get_ports {SW[14]}]
-set_property PACKAGE_PIN R2 [get_ports {reset}]					
-	set_property IOSTANDARD LVCMOS33 [get_ports {reset}]
+set_property PACKAGE_PIN R2 [get_ports {SW[15]}]					
+	set_property IOSTANDARD LVCMOS33 [get_ports {SW[15]}]
  
 
 ## LEDs
@@ -123,8 +123,8 @@ set_property PACKAGE_PIN U17 [get_ports BTND]
 
 ##Pmod Header JA
 ##Sch name = JA1
-#set_property PACKAGE_PIN J1 [get_ports {JA[0]}]					
-	#set_property IOSTANDARD LVCMOS33 [get_ports {JA[0]}]
+set_property PACKAGE_PIN J1 [get_ports {reset}]					
+	set_property IOSTANDARD LVCMOS33 [get_ports {reset}]
 ##Sch name = JA2
 #set_property PACKAGE_PIN L2 [get_ports {JA[1]}]					
 	#set_property IOSTANDARD LVCMOS33 [get_ports {JA[1]}]
