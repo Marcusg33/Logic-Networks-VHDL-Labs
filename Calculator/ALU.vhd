@@ -21,8 +21,6 @@ architecture Behavioral of ALU is
 begin
 
     process (a, b, add, subtract, multiply, divide, moltiplica)
-        variable to_devide : signed(15 downto 0);
-        variable result    : signed(15 downto 0);
     begin
         r <= (others => '0');  -- default assignment
 
@@ -37,13 +35,8 @@ begin
         r <= moltiplica(15 downto 0);  -- lower 16 bits
 
         elsif divide = '1' then
-        to_devide := a;
-        result := (others => '0');  -- reset result each time
-        while to_devide >= b loop
-            to_devide := to_devide - b;
-            result := result + 1;
-        end loop;
-        r <= result;
+        r <= a / b;
+
         end if;
     end process;
 
