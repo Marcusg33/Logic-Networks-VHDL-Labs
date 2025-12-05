@@ -149,7 +149,7 @@ architecture behavioral of main_pig_game is
             DIGIT1  => DIGIT1,
             DIGIT2  => DIGIT2,
             DIGIT3  => DIGIT3,
-            LEDDIE  => LED(15 downto 14),
+            LEDDIE  => LED(15 downto 13),
             DIE1    => DIE1,
             WN      => WN
         );
