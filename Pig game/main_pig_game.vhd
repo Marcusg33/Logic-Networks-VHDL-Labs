@@ -205,5 +205,14 @@ architecture behavioral of main_pig_game is
             debounced=> BTN_2_DEBOUNCED
         );
 
+    led : process(CP)
+    begin
+        if CP = '0' then
+            LED(1) <= '1';
+        else
+            LED(0) <= '0';
+        end if;
+    end process led;
+
 
 end architecture behavioral;
