@@ -1,3 +1,7 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
 entity main_pig_game is
     port (
         CLK : in std_logic; --! system clock
