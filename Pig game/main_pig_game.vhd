@@ -3,8 +3,8 @@ entity main_pig_game is
         CLK : in std_logic; --! system clock
         BTN : in std_logic_vector(4 downto 0); --! input buttons
         LED : out std_logic_vector(15 downto 0); --! output to 7-segment display segments
-        SSEG_AN : out std_logic_vector(3 downto 0)  --! output to 7-segment display anodes
-        SSEG_CA : out std_logic_vector(7 downto 0)  --! output to 7-segment display cathodes
+        SSEG_AN : out std_logic_vector(3 downto 0);  --! output to 7-segment display anodes
+        SSEG_CA : out std_logic_vector(7 downto 0);  --! output to 7-segment display cathodes
         SW : in std_logic_vector(15 downto 0)  --! input from switches
     );
 end entity main_pig_game;
@@ -85,11 +85,121 @@ architecture behavioral of main_pig_game is
             );
     end component debouncer;
 
-
+    -- Signals declaration
+    signal ENADIE : std_logic; --! Enable Die to increment
+    signal LDSU   : std_logic; --! Add DIE to SUR register
+    signal LDT1   : std_logic; --! Add SUR to TR1 register
+    signal LDT2   : std_logic; --! Add SUR to TR2 register
+    signal RSSU   : std_logic; --! Reset SUR register
+    signal RST1   : std_logic; --! Reset TR1 register
+    signal RST2   : std_logic; --! Reset TR2 register
+    signal BP1    : std_logic; --! enables blinking
+    signal CP     : std_logic; --! current player (register outside)
+    signal FP     : std_logic; --! First player (register outside)
+    signal DIE1   : std_logic; --! signal that the die is at one
+    signal WN     : std_logic; --! WIN has been achieved by a player
+    signal DIGIT0 : std_logic_vector( 3 downto 0 ); --! digit to the right
+    signal DIGIT1 : std_logic_vector( 3 downto 0 ); --! 2nd digit to the left
+    signal DIGIT2 : std_logic_vector( 3 downto 0 ); --! 3nd digit to the left
+    signal DIGIT3 : std_logic_vector( 3 downto 0 ); --! digit to the left
+    signal BTN_0_DEBOUNCED : std_logic; --! debounced version of BTN(0)
+    signal BTN_1_DEBOUNCED : std_logic; --! debounced version of BTN(1)
+    signal BTN_2_DEBOUNCED : std_logic; --! debounced version of BTN(2)
+    
     begin
-    -- Instantiation of components
+    control_unit : controlunit
+        port map (
+            clock   => CLK,
+            reset   => SW(0),
+            ROLL    => BTN_0_DEBOUNCED,
+            HOLD    => BTN_1_DEBOUNCED,
+            NEWGAME => BTN_2_DEBOUNCED,
+            ENADIE  => ENADIE,
+            LDSU    => LDSU,
+            LDT1    => LDT1,
+            LDT2    => LDT2,
+            RSSU    => RSSU,
+            RST1    => RST1,
+            RST2    => RST2,
+            BP1     => BP1,
+            CP      => CP,
+            FP      => FP,
+            DIE1    => DIE1,
+            WN      => WN
+        );
 
+    data_path : datapath
+        port map (
+            clock   => CLK,
+            reset   => SW(0),
+            ENADIE  => ENADIE,
+            LDSU    => LDSU,
+            LDT1    => LDT1,
+            LDT2    => LDT2,
+            RSSU    => RSSU,
+            RST1    => RST1,
+            RST2    => RST2,
+            CP      => CP,
+            FP      => FP,
+            DIGIT0  => DIGIT0,
+            DIGIT1  => DIGIT1,
+            DIGIT2  => DIGIT2,
+            DIGIT3  => DIGIT3,
+            LEDDIE  => LED(15 downto 14),
+            DIE1    => DIE1,
+            WN      => WN
+        );
+    
+    sseg_driver : seven_segment_driver
+        generic map (
+            size => 20
+        )
+        port map (
+            clock   => CLK,
+            reset   => SW(0),
+            digit0  => DIGIT0,
+            digit1  => DIGIT1,
+            digit2  => DIGIT2,
+            digit3  => DIGIT3,
+            CA      => SSEG_CA,
+            AN      => SSEG_AN
+        );
 
+    roll_debouncer : debouncer
+        generic map (
+            counter_size => 23
+        )
+        port map (
+            clock    => CLK,
+            reset    => SW(0),
+            bouncy   => BTN(0),
+            pulse    => open,
+            debounced=> BTN_0_DEBOUNCED
+        );
+
+    hold_debouncer : debouncer
+        generic map (
+            counter_size => 23
+        )
+        port map (
+            clock    => CLK,
+            reset    => SW(0),
+            bouncy   => BTN(1),
+            pulse    => open,
+            debounced=> BTN_1_DEBOUNCED
+        );
+    
+    newgame_debouncer : debouncer
+        generic map (
+            counter_size => 23
+        )
+        port map (
+            clock    => CLK,
+            reset    => SW(0),
+            bouncy   => BTN(2),
+            pulse    => open,
+            debounced=> BTN_2_DEBOUNCED
+        );
 
 
 end architecture behavioral;
