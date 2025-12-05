@@ -98,8 +98,8 @@ architecture behavioral of main_pig_game is
     signal RST1   : std_logic; --! Reset TR1 register
     signal RST2   : std_logic; --! Reset TR2 register
     signal BP1    : std_logic; --! enables blinking
-    signal CP     : std_logic; --! current player (register outside)
-    signal FP     : std_logic; --! First player (register outside)
+    signal CP     : std_logic := '0'; --! current player (register outside)
+    signal FP     : std_logic := '0'; --! First player (register outside)
     signal DIE1   : std_logic; --! signal that the die is at one
     signal WN     : std_logic; --! WIN has been achieved by a player
     signal DIGIT0 : std_logic_vector( 3 downto 0 ); --! digit to the right
