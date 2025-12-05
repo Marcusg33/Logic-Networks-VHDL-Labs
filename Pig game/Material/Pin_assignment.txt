@@ -1,0 +1,4 @@
+ROLL    => BTN(0),
+HOLD    => BTN(1),
+NEWGAME => BTN(2),
+reset   => SW(0),
