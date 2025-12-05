@@ -119,11 +119,12 @@ Main_process : process(clock,reset) begin
                     when "110" => DIE <= "001";
                     when others => DIE <= DIE +1;
                 end case;
-            end if;
-            if DIE ="001" then
-                DIE1 <= '1';
-            else 
-                DIE1 <= '0';
+            else
+                if DIE ="001" then
+                    DIE1 <= '1';
+                else 
+                    DIE1 <= '0';
+                end if;
             end if;
             if LDSU = '1' then
                 SUR <= SUR + (frontbits & DIE);

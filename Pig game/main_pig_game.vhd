@@ -161,10 +161,10 @@ architecture behavioral of main_pig_game is
         port map (
             clock   => CLK,
             reset   => SW(0),
-            digit0  => DIGIT0,
-            digit1  => DIGIT1,
-            digit2  => DIGIT2,
-            digit3  => DIGIT3,
+            digit0  => DIGIT1,
+            digit1  => DIGIT0,
+            digit2  => DIGIT3,
+            digit3  => DIGIT2,
             CA      => SSEG_CA,
             AN      => SSEG_AN
         );
