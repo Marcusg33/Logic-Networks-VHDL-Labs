@@ -109,6 +109,7 @@ architecture behavioral of main_pig_game is
     signal BTN_0_DEBOUNCED : std_logic; --! debounced version of BTN(0)
     signal BTN_1_DEBOUNCED : std_logic; --! debounced version of BTN(1)
     signal BTN_2_DEBOUNCED : std_logic; --! debounced version of BTN(2)
+    signal blink_scaler : unsigned(22 downto 0) := (others => '0'); --! scaler for blinking
     
     begin
     control_unit : controlunit
@@ -207,13 +208,26 @@ architecture behavioral of main_pig_game is
 
     player : process(CP)
     begin
+        LED(0) <= '0';
+        LED(1) <= '0';
+        
         if CP = '0' then
             LED(1) <= '1';
         else
-            LED(0) <= '0';
+            LED(0) <= '1';
         end if;
     end process player;
 
-
+    blinking : process(CLK)
+    begin
+        blink_scaler <= blink_scaler + 1;
+        if rising_edge(CLK) and (BP1 = '1') then
+            if blink_scaler(22) = '0' then
+                LED(12 downto 2) <= (others => '0');
+            else
+                LED(12 downto 2) <= (others => '1');
+            end if;
+        end if;
+    end process blinking;
 
 end architecture behavioral;
