@@ -100,5 +100,4 @@ architecture Behavioral of seven_segment_driver is
       
     CA <= cathodes;
       
-      end behavioral;
-      
+end Behavioral;
