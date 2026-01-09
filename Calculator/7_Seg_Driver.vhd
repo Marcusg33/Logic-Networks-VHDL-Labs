@@ -2,18 +2,13 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
-
 entity Seven_segment_driver is
     generic (
         size : integer := 20
     );
     Port (
         clk : in std_logic;
-        rst : in std_logic;
+        rst : in std_logic; -- Low active reset
         binary_input : in std_logic_vector( 15 downto 0 );
         CA, CB, CC, CD, CE, CF, CG, DP : out std_logic;
         AN : out std_logic_vector( 3 downto 0 )

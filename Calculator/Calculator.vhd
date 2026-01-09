@@ -11,7 +11,7 @@ entity Calculator is
         SW : in std_logic_vector( 15 downto 0 );
         BTNC, BTNU, BTNL, BTNR, BTND : in std_logic;
         LED : out std_logic_vector( 15 downto 0 );
-        CA, CB, CC, CD, CE, CF, CG, DP : out std_logic; --! modify the constraint file accordingly
+        CA, CB, CC, CD, CE, CF, CG, DP : out std_logic;
         AN : out std_logic_vector( 3 downto 0 )
     );
 end Calculator;
@@ -125,7 +125,7 @@ begin
     );
   
     -- Instantiate the seven segment display driver
-    the_driver : Seven_segment_driver
+    display_driver_comp : Seven_segment_driver
     generic map ( 
         size => 21
     ) port map (
@@ -144,7 +144,7 @@ begin
     );
 
     -- Instantiate the accumulator
-    the_accumulator : Accumulator
+    accum_comp : Accumulator
     port map (
         clk => clock,
         rst => reset,
@@ -155,7 +155,7 @@ begin
     );
 
     -- Instantiate the ALU
-    the_alu : ALU
+    alu_comp : ALU
     port map (
         a => acc_out,
         b => signed( sw_input ),

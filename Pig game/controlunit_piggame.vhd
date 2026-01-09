@@ -55,103 +55,104 @@ architecture rtl of controlunit is
     type PIG_STATE is (INITIAL, BEGINNING, ROLLING, ONE, ROLLHOLD, TEST, WIN);
     --Signal definition
     signal PIG_CURRENT_STATE : PIG_STATE;
-    begin
-FSM : process(clock)
+
+begin
+    FSM : process(clock)
     begin      
-if rising_edge(clock) then
-    if reset = '1' then --chosen this one but could be anything to reset
-        -- reset
-        PIG_CURRENT_STATE <= INITIAL;
-        FP <= '0';
-    else
-    --default values
-        ENADIE <= '0';
-        LDSU <= '0';
-        LDT1 <= '0';
-        LDT2 <= '0';
-        RSSU <= '0';
-        RST1 <= '0';
-        RST2 <= '0';
-        BP1 <= '0';
-    
-     --type PIG_STATE is (INIT, BEGINNING, ROLLING, ONE, ROLLHOLD, TEST, WIN);
-
-        case PIG_CURRENT_STATE is
-        when INITIAL =>
-            
-            PIG_CURRENT_STATE <= BEGINNING;
-
-            RST1 <= '1'; --! reset TR1
-            RST2 <= '1'; --! reset TR2
-            CP <= FP; --! behavioural implmentation
-            
-
-        when BEGINNING =>
-        RSSU <= '1';
-            
-            if ROLL = '1' then --! Press the button to roll the dice
-                PIG_CURRENT_STATE <= ROLLING;
-            end if;
-            
-        when ROLLING =>
-            
-            if ROLL = '1' then
-                ENADIE <= '1'; --! enables die increment
-
-            else
-                PIG_CURRENT_STATE <= ONE;
-            end if;
-
-        when ONE =>
-            if DIE1 ='1' then
-                CP <= not CP;
-                PIG_CURRENT_STATE <= BEGINNING;
-            else
-                PIG_CURRENT_STATE <= ROLLHOLD;
-                LDSU <= '1';
-            end if;      
-
-        when ROLLHOLD =>
-        
-            if HOLD = '1' then
-                PIG_CURRENT_STATE <= TEST;
-                CP <= not CP; 
-                if CP = '1' then 
-                    LDT1 <= '1'; 
-                else 
-                    LDT2 <= '1'; 
-                end if;
-            else
-                if ROLL = '1' then
-                    PIG_CURRENT_STATE <= ROLLING;
-                else
-                    PIG_CURRENT_STATE <= ROLLHOLD;
-                end if;
-            end if; 
-
-        when TEST =>
-       
-
-            if WN = '1' then
-                PIG_CURRENT_STATE <= WIN;
-            else
-                PIG_CURRENT_STATE <= BEGINNING;
-            end if;
-        when WIN =>
-        
-            BP1 <= '1';
-            
-            if NEWGAME = '1' then
-                FP <= not FP;
+        if rising_edge(clock) then
+            if reset = '1' then --chosen this one but could be anything to reset
+                -- reset
                 PIG_CURRENT_STATE <= INITIAL;
-            else 
-                PIG_CURRENT_STATE <= WIN;
+                FP <= '0';
+            else
+            --default values
+                ENADIE <= '0';
+                LDSU <= '0';
+                LDT1 <= '0';
+                LDT2 <= '0';
+                RSSU <= '0';
+                RST1 <= '0';
+                RST2 <= '0';
+                BP1 <= '0';
+            
+            --type PIG_STATE is (INIT, BEGINNING, ROLLING, ONE, ROLLHOLD, TEST, WIN);
+
+                case PIG_CURRENT_STATE is
+                when INITIAL =>
+                    
+                    PIG_CURRENT_STATE <= BEGINNING;
+
+                    RST1 <= '1'; --! reset TR1
+                    RST2 <= '1'; --! reset TR2
+                    CP <= FP; --! behavioural implmentation
+                    
+
+                when BEGINNING =>
+                RSSU <= '1';
+                    
+                    if ROLL = '1' then --! Press the button to roll the dice
+                        PIG_CURRENT_STATE <= ROLLING;
+                    end if;
+                    
+                when ROLLING =>
+                    
+                    if ROLL = '1' then
+                        ENADIE <= '1'; --! enables die increment
+
+                    else
+                        PIG_CURRENT_STATE <= ONE;
+                    end if;
+
+                when ONE =>
+                    if DIE1 ='1' then
+                        CP <= not CP;
+                        PIG_CURRENT_STATE <= BEGINNING;
+                    else
+                        PIG_CURRENT_STATE <= ROLLHOLD;
+                        LDSU <= '1';
+                    end if;      
+
+                when ROLLHOLD =>
+                
+                    if HOLD = '1' then
+                        PIG_CURRENT_STATE <= TEST;
+                        CP <= not CP; 
+                        if CP = '1' then 
+                            LDT1 <= '1'; 
+                        else 
+                            LDT2 <= '1'; 
+                        end if;
+                    else
+                        if ROLL = '1' then
+                            PIG_CURRENT_STATE <= ROLLING;
+                        else
+                            PIG_CURRENT_STATE <= ROLLHOLD;
+                        end if;
+                    end if; 
+
+                when TEST =>
+            
+
+                    if WN = '1' then
+                        PIG_CURRENT_STATE <= WIN;
+                    else
+                        PIG_CURRENT_STATE <= BEGINNING;
+                    end if;
+                when WIN =>
+                
+                    BP1 <= '1';
+                    
+                    if NEWGAME = '1' then
+                        FP <= not FP;
+                        PIG_CURRENT_STATE <= INITIAL;
+                    else 
+                        PIG_CURRENT_STATE <= WIN;
+                    end if;
+
+                end case;
+
             end if;
-
-        end case;
-
-    end if;
-end if;
-end process;
+        end if;
+    end process;
 end architecture ;
    

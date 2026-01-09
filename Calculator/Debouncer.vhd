@@ -8,7 +8,7 @@ entity Debouncer is
     );
     port (
         clk         : in  std_logic;
-        rst         : in  std_logic;
+        rst         : in  std_logic; -- Low active reset
         bouncy    : in  std_logic;
         pulse   : out std_logic
     );
@@ -28,7 +28,7 @@ begin
             outputting <= '0';
         elsif rising_edge(clk) then
             if outputting = '1' then
-                -- Output has been updated, wait for next change
+                -- Output has been updated (just for one clock), wait for next change
                 outputting <= '0';
                 counter <= (others => '1');
                 pulse <= '0';

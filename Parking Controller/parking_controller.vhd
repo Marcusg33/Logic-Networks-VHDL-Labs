@@ -52,7 +52,6 @@ architecture Behavioral of Parking_Controller is
             barrier     : out std_logic
         );
     end component Gin_fsm;
-    -- Gout
 
     component Gout_fsm is
         port(
@@ -185,7 +184,7 @@ begin
     end process in_gate_controller;
 
 
-    -- Output Control based on State
+    -- Output Control based on state
     output_control : process(clk, nrst)
     begin
         if nrst = '0' then

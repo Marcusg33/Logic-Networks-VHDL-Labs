@@ -111,7 +111,9 @@ architecture behavioral of main_pig_game is
     signal BTN_2_DEBOUNCED : std_logic; --! debounced version of BTN(2)
     signal blink_scaler : unsigned(23 downto 0) := (others => '0'); --! scaler for blinking
     
-    begin
+begin
+    
+    -- Components bindings
     control_unit : controlunit
         port map (
             clock   => CLK,
@@ -206,6 +208,7 @@ architecture behavioral of main_pig_game is
             debounced=> BTN_2_DEBOUNCED
         );
 
+    -- Process that handles the LED indication of the current player
     player : process(CP)
     begin
         LED(0) <= '0';
@@ -218,6 +221,7 @@ architecture behavioral of main_pig_game is
         end if;
     end process player;
 
+    -- Process that handles the blinking of the LEDs when a player wins
     blinking : process(CLK)
     begin
         blink_scaler <= blink_scaler + 1;

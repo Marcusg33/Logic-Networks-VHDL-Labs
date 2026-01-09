@@ -2,7 +2,7 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
--- ALU entity definition: inputs must take the sign into account!
+-- ALU entity definition: inputs must take the sign into account
 entity ALU is
     Port (
         a        : in  signed( 15 downto 0 );
@@ -15,12 +15,12 @@ entity ALU is
     );
 end ALU;
 
--- Definizione architettura ALU
+-- ALU architecture definition
 architecture Behavioral of ALU is
-    signal moltiplica : signed(31 downto 0);
+    signal temp_res : signed(31 downto 0);
 begin
 
-    process (a, b, add, subtract, multiply, divide, moltiplica)
+    process (a, b, add, subtract, multiply, divide, temp_res)
     begin
         r <= (others => '0');  -- default assignment
 
@@ -31,8 +31,8 @@ begin
         r <= a - b;
 
         elsif multiply = '1' then
-        moltiplica <= a * b;
-        r <= moltiplica(15 downto 0);  -- lower 16 bits
+        temp_res <= a * b;
+        r <= temp_res(15 downto 0);  -- lower 16 bits
 
         elsif divide = '1' then
         r <= a / b;

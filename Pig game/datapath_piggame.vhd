@@ -52,103 +52,104 @@ entity datapath is
 end entity datapath;
 
 architecture rtl of datapath is
--- definition of constants
-constant frontbits : std_logic_vector(3 downto 0) := (others => '0'); --! bits to be added in front of DIE register for transfer into SUR register
--- definition of the signals
-signal TR1 : std_logic_vector(6 downto 0) := (others =>'0'); --! Register TR1
-signal TR2 : std_logic_vector(6 downto 0) := (others =>'0'); --! Register TR2
-signal SUR : std_logic_vector(6 downto 0) := (others =>'0'); --! Register SUR
-signal DIE : std_logic_vector(2 downto 0); --! Register DIE register
-signal D   : std_logic_vector(6 downto 0) := (others =>'0'); --! Register D
-signal bcd1 : std_logic_vector(3 downto 0):= (others =>'0'); --! result of conversion of TR1 in bcd
-signal bcd2 : std_logic_vector(3 downto 0):= (others =>'0'); --! result of conversion of TR1 in bcd
-signal bcd3 : std_logic_vector(3 downto 0):= (others =>'0'); --! result of conversion of TR2 in bcd
-signal bcd4 : std_logic_vector(3 downto 0):= (others =>'0'); --! result of conversion of TR2 in bcd
------ component definition
-component binbcd
-Port (
-    clock  : in std_logic; --! clock
-    reset  : in std_logic; --! reset
-    bin    : in std_logic_vector(6 downto 0); --! binary 7 bit
-    digit0 : out std_logic_vector( 3 downto 0 ); --! digit units
-    digit1 : out std_logic_vector( 3 downto 0 ) --! digit ten  
-  );
-end component;
+    -- definition of constants
+    constant frontbits : std_logic_vector(3 downto 0) := (others => '0'); --! bits to be added in front of DIE register for transfer into SUR register
+    -- definition of the signals
+    signal TR1 : std_logic_vector(6 downto 0) := (others =>'0'); --! Register TR1
+    signal TR2 : std_logic_vector(6 downto 0) := (others =>'0'); --! Register TR2
+    signal SUR : std_logic_vector(6 downto 0) := (others =>'0'); --! Register SUR
+    signal DIE : std_logic_vector(2 downto 0); --! Register DIE register
+    signal D   : std_logic_vector(6 downto 0) := (others =>'0'); --! Register D
+    signal bcd1 : std_logic_vector(3 downto 0):= (others =>'0'); --! result of conversion of TR1 in bcd
+    signal bcd2 : std_logic_vector(3 downto 0):= (others =>'0'); --! result of conversion of TR1 in bcd
+    signal bcd3 : std_logic_vector(3 downto 0):= (others =>'0'); --! result of conversion of TR2 in bcd
+    signal bcd4 : std_logic_vector(3 downto 0):= (others =>'0'); --! result of conversion of TR2 in bcd
+    ----- component definition
+    component binbcd
+    Port (
+        clock  : in std_logic; --! clock
+        reset  : in std_logic; --! reset
+        bin    : in std_logic_vector(6 downto 0); --! binary 7 bit
+        digit0 : out std_logic_vector( 3 downto 0 ); --! digit units
+        digit1 : out std_logic_vector( 3 downto 0 ) --! digit ten  
+    );
+    end component;
 
-    begin
+begin
 --------------------------------
-inst_bin2BCD1 : binbcd --! score player 1
-  PORT map(
-    clock  => clock,
-    reset  => reset,
-    bin    => TR1,
-    digit0 => bcd1, --resulting BCD number- for TR1
-    digit1 => bcd2);
+    -- instantiate the binary to BCD converter for both player 1 and player 2
+    inst_bin2BCD1 : binbcd 
+        PORT map(
+            clock  => clock,
+            reset  => reset,
+            bin    => TR1,
+            digit0 => bcd1, --resulting BCD number- for TR1
+            digit1 => bcd2);
 
-inst_bin2BCD2 : binbcd
-  PORT map(
-    clock  => clock,
-    reset  => reset,
-    bin    => TR2,
-    digit0 => bcd3, --resulting BCD number- for TR2
-    digit1 => bcd4);
---------------------------------
-Main_process : process(clock,reset) begin
-    if reset = '1' then
-        -- reset
-        DIE <= (others => '0'); --! asynchronous reset
-    else
-        if rising_edge(clock) then
-            if RST1 = '1' then
-                TR1 <= (others => '0');
-            end if;
-            if RST2 = '1' then
-                TR2 <= (others => '0');
-            end if;
-            if RSSU = '1' then
-                SUR <= (others => '0');
-            end if;
-            if LDT1 = '1' then
-                TR1 <= TR1 + SUR;
-            end if;
-            if LDT2 = '1' then
-                TR2 <= TR2 + SUR;
-            end if;
-            if ENADIE = '1' then
-                case DIE is
-                    when "110" => DIE <= "001";
-                    when others => DIE <= DIE +1;
-                end case;
-            end if;
-            if DIE ="110" then -- Because the process set the signals at the end, we need to tcheck the previous value of die, which is 6
-                DIE1 <= '1';
-            else 
-                DIE1 <= '0';
-            end if;
-            if LDSU = '1' then
-                SUR <= SUR + (frontbits & DIE);
-            end if;
-            if CP ='1' then
-                D <= TR2;
-            else
-                D <= TR1;
-            end if;
+    inst_bin2BCD2 : binbcd
+        PORT map(
+            clock  => clock,
+            reset  => reset,
+            bin    => TR2,
+            digit0 => bcd3, --resulting BCD number- for TR2
+            digit1 => bcd4);
+    --------------------------------
+    Main_process : process(clock,reset) begin
+        if reset = '1' then
+            -- reset
+            DIE <= (others => '0'); --! asynchronous reset
+        else
+            if rising_edge(clock) then
+                if RST1 = '1' then
+                    TR1 <= (others => '0');
+                end if;
+                if RST2 = '1' then
+                    TR2 <= (others => '0');
+                end if;
+                if RSSU = '1' then
+                    SUR <= (others => '0');
+                end if;
+                if LDT1 = '1' then
+                    TR1 <= TR1 + SUR;
+                end if;
+                if LDT2 = '1' then
+                    TR2 <= TR2 + SUR;
+                end if;
+                if ENADIE = '1' then
+                    case DIE is
+                        when "110" => DIE <= "001";
+                        when others => DIE <= DIE +1;
+                    end case;
+                end if;
+                if DIE ="110" then -- Because the process set the signals at the end, we need to tcheck the previous value of die, which is 6
+                    DIE1 <= '1';
+                else 
+                    DIE1 <= '0';
+                end if;
+                if LDSU = '1' then
+                    SUR <= SUR + (frontbits & DIE);
+                end if;
+                if CP ='1' then
+                    D <= TR2;
+                else
+                    D <= TR1;
+                end if;
 
-            if (D > "1100011") then
-                WN <= '1';
-             else 
-                WN <= '0';
-            end if;
+                if (D > "1100011") then
+                    WN <= '1';
+                else 
+                    WN <= '0';
+                end if;
 
+            end if;
         end if;
-    end if;
 
---! connection to displays
-LEDDIE <= DIE;
-DIGIT0 <= bcd1;
-DIGIT1 <= bcd2;
-DIGIT2 <= bcd3;
-DIGIT3 <= bcd4;
-end process;
+        --! connection to displays
+        LEDDIE <= DIE;
+        DIGIT0 <= bcd1;
+        DIGIT1 <= bcd2;
+        DIGIT2 <= bcd3;
+        DIGIT3 <= bcd4;
+    end process;
 
 end architecture rtl;
